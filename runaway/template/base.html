@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html>
+    <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Runaway Ops Consol</title>
+    <script src="/static/jquery-3.2.1.min.js"></script>
+    <script src="/static/jqtime/jquery.timers-1.2.js"></script>
+    <link href="/static/navbar.css" rel="stylesheet">
+    <link href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.bootcss.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="/static/bootstrap-table/src/bootstrap-table.css">
+    <script src="/static/bootstrap-table/src/bootstrap-table.js"></script>
+    <script src="/static/bootstrap-table/src/extensions/export/bootstrap-table-export.js"></script>
+    <script src="/static/bootstrap-table/src/extensions/filter-control/bootstrap-table-filter-control.js">
+    </script>
+    <script src="/static/bootstrap-table/src/extensions/mobile/bootstrap-table-mobile.js"></script>
+    </script>
+    <link href="//cdnjs.cloudflare.com/ajax/libs/x-editable/1.5.0/bootstrap3-editable/css/bootstrap-editable.css" rel="stylesheet"/>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/x-editable/1.5.0/bootstrap3-editable/js/bootstrap-editable.min.js"></script>
+    </head>
+    <body>
+    <div class="container">
+      <!-- Static navbar -->
+      <nav class="navbar navbar-default">
+        <div class="container-fluid">
+          <div class="navbar-header">
+           <a class="navbar-brand" href="#">Runaway Ops Consol</a>
+          </div>
+	
+          <div id="navbar" class="navbar-collapse collapse">
+            <ul class="nav navbar-nav">
+              <li class="active"><a href="#">Home</a></li>
+              <li><a href="#" id="monitor">Monitor</a></li>
+              <li><a href="#" id='svninfo'>SVN</a></li>
+              <li><a href="#" id='p4info'>Perforce </a></li>
+            </ul>
+            <ul class="nav navbar-nav navbar-right">
+              <li class="dropdown">
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
+		{{session['user']|safe}}
+		<span class="caret"></span>
+		</a>
+                <ul class="dropdown-menu">
+                  <li><a href="#" id="changepassword" data-toggle="modal" data-target="#myModal">ChangePasswd</a></li>
+                  <li><a href="/user_login_out/">Logout</a></li>
+                </ul>
+              </li>
+            </ul>
+		
+          </div><!--/.nav-collapse -->
+
+        </div><!--/.container-fluid -->
+      </nav>
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display:none">
+    <div class="modal-dialog">
+      <div class="modal-content" >
+        <div class="modal-header"  >
+          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+          <h4 class="modal-title" id="myModalLabel">修改密码</h4>
+        </div>
+        <div class="modal-body" >
+		<div class="row">
+        		<div class="col-lg-8 col-lg-offset-2">
+            		<div class="form-horizontal">
+                		<div class="form-group">
+                    			<label class="col-lg-3 control-label">oldPassword:</label>
+                    				<div class="col-lg-6">
+                        			<input type="text" class="form-control" id="oldPassword" placeholder="old"/>
+                    				</div>
+                		</div>
+
+                		<div class="form-group">
+                    			<label class="col-lg-3 control-label">newPassword:</label>
+                    			<div class="col-lg-6">
+                        			<input type="password" class="form-control" id="newPassword" placeholder="new"/>
+                    			</div>
+                		</div>
+
+                		<div class="form-group">
+                    			<label class="col-lg-3 control-label">Ponfirm:</label>
+                    			<div class="col-lg-6">
+                        			<input type="password" class="form-control" id="confirmpassword" placeholder="confirm"/>
+                    			</div>
+                		</div>
+            		</div>
+        	</div>
+    	</div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-primary" id="submitChange">确认更改</button>
+        </div>
+      </div>
+    </div>
+  </div>
+	<div id="boottable"></div>
+    </div> <!-- /container -->
+<script>
+        function check(){
+        var flag = true;
+        var password = $("#newPassword").val();
+        var passwordConfirm = $("#confirmPassword").val();
+        if(password != passwordConfirm){
+            flag = false;
+        }
+
+        return flag;
+      }
+      $("#monitor").click(function(){
+		$("#boottable").load('/monitor');
+	});
+      $("#svninfo").click(function(){
+		$("#boottable").load('/svninfo');
+	});
+      $("#p4info").click(function(){
+		$("#boottable").load('/p4info');
+	});
+      $('#submitChange').on('click', function(ev){
+          if(check() == false){
+              alert("您2次输入的密码不一致");
+          } else {
+                var newpasswd = $("#newPassword").val();
+                var oldpassword = $("#oldPassword").val();
+            var data = {
+                    data:JSON.stringify({
+                        "oldpasswd": oldpassword,
+                        "newpasswd": newpasswd
+                        })
+                    };
+            $.ajax({
+                    type: 'POST',
+                    url: "/api/v1/changepasswd",
+                    async: false,
+                    data: data,
+                    timeout: 3000,
+                    success: function(msg){
+                                if(msg['status'] == 0){
+                                        alert('密码修改成功');
+                                        window.location.href="/user_login_out";
+                                }
+                                if(msg['status'] == 1){
+                                        alert('密码验证失败');
+                                }
+                    },
+                     error:function(msg){
+                        alert('error');
+                    }
+                    })
+          }
+      });
+</script>
+    </body>
+</html>

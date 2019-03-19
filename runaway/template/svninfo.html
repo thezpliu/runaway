@@ -1,0 +1,79 @@
+<table id="svninfotable"
+           data-show-refresh="true"
+	   data-show-header="true"
+           data-show-toggle="true"
+           data-show-columns="true"
+           data-show-pagination-switch="true"
+	   data-striped = "true"
+           data-id-field="name"
+           data-show-footer="false"
+           data-url="/api/v1/svn_info"
+           data-pagination="true"
+	   data-side-pagination="client"
+	   data-page-size= "25"
+	   data-page-number="1"
+           data-page-list="[25, 50, 100, ALL]"
+	   data-toggle="table"
+	>
+</table>
+<script>
+	var $svntable = $('#svninfotable');
+	function initTable() {
+        $svntable.bootstrapTable({
+            height: getHeight(),
+            columns: 
+                [
+                    {   
+                        title: 'Path',
+                        field: 'Path',
+                        align: 'center',
+                        valign: 'middle',
+                        sortable: true,
+                    }, 
+                    {   
+                        title: 'Revision',
+                        field: 'Revision',
+                        align: 'center',
+                        valign: 'middle',
+                        sortable: true,
+                    }, 
+                    {   
+                        title: 'Back Rev',
+                        field: 'back',
+                        align: 'center',
+                        valign: 'middle',
+                        sortable: true,
+                    }, 
+                    {   
+                        title: 'Repository Root',
+                        field: 'Repository Root',
+                        align: 'center',
+                        valign: 'middle',
+                        sortable: true,
+                    }, 
+                    {   
+                        title: 'Last Changed Date',
+                        field: 'Last Changed Date',
+                        align: 'center',
+                        valign: 'middle',
+                        sortable: true,
+                    }, 
+                    {   
+                        title: 'Last Changed Author',
+                        field: 'Last Changed Author',
+                        align: 'center',
+                        valign: 'middle',
+                        sortable: true,
+                    }, 
+                ],
+        });
+	}
+    function getHeight() {
+        return $(window).height() - $('h1').outerHeight(true);
+    }
+    initTable();
+    $svntable.everyTime('300s','S',function(){
+	$svntable.bootstrapTable('refresh');
+    },0,true);
+	//定时器，每300秒执行，定时器命名T，无限次，如果函数没有执行完成，则等待执行完成.
+</script>

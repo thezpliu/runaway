@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Runaway login</title>
+
+    <link rel="stylesheet" href="/static/bootstrapvalidator/vendor/bootstrap/css/bootstrap.css"/>
+    <link rel="stylesheet" href="/static/bootstrapvalidator/dist/css/bootstrapValidator.css"/>
+
+    <script type="text/javascript" src="/static/bootstrapvalidator/vendor/jquery/jquery.min.js"></script>
+    <script type="text/javascript" src="/static/bootstrapvalidator/vendor/bootstrap/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="/static/bootstrapvalidator/dist/js/bootstrapValidator.js"></script>
+</head>
+<body>
+<div class="container">
+    <div class="row">
+        <div class="col-lg-8 col-lg-offset-2">
+            <div class="page-header">
+                <h2>Runaway Sign in</h2>
+            </div>
+            <div class="form-horizontal">
+                <div class="form-group">
+                    <label class="col-lg-3 control-label">Username</label>
+                    <div class="col-lg-5">
+                        <input type="text" class="form-control" id="user"/>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="col-lg-3 control-label">Password</label>
+                    <div class="col-lg-5">
+                        <input type="password" class="form-control" id="password"/>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="col-lg-9 col-lg-offset-3">
+                        <button type="submit" class="btn btn-primary" id = "submit">Sign in</button>
+                    </div>
+                </div>
+		<p id ="iferror"></p>
+            </div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+	$("#submit").click(function(){
+       // var data = {
+       //   data:JSON.stringify({
+       //       'user': $("#user").val(),
+       //       'password': $("#password").val()
+       //    })
+       //  };
+        $.ajax({
+           url:"/api/v1/login",
+           type: 'POST',
+	   data: JSON.stringify({
+                        "user": $("#user").val(),
+                        "password": $("#password").val(),
+                        }),
+	   dataType: 'JSON',
+           success: function(msg){
+              var message='';
+              var result = '';
+              $.each(msg,function(i,v){ 
+                  if (i == 'message') {
+                      message=v;
+                    }
+                    if (i == 'status') {
+                        result = v;
+                    }
+                })
+            if (result == 0){
+                // result = 0 是验证失败的结果
+		alert('password error');
+            }else{
+              window.location.href=document.referrer;
+                //返回到载入login.html页面的页面,一般是在访问其他页面时验证session里的用户信息，
+                //如果有问题就跳转到login.html，在这里是通过了验证又跳转回去了
+            }
+           }
+        });
+    });
+</script>
+</body>
+</html>

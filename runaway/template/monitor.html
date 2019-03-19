@@ -1,0 +1,72 @@
+<table id="table"
+           data-show-refresh="true"
+	   data-show-header="true"
+           data-show-toggle="true"
+           data-show-columns="true"
+           data-show-pagination-switch="true"
+	   data-striped = "true"
+           data-id-field="name"
+           data-show-footer="false"
+           data-url="/api/v1/zabbix_info"
+           data-pagination="true"
+	   data-side-pagination="client"
+	   data-page-size= "25"
+	   data-page-number="1"
+           data-page-list="[25, 50, 100, ALL]"
+	   data-toggle="table"
+	>
+</table>
+<script>
+	var $table = $('#table');
+	function initTable() {
+        $table.bootstrapTable({
+            height: getHeight(),
+            columns: 
+                [
+                    {   
+                        title: 'Name',
+                        field: 'name',
+                        align: 'center',
+                        valign: 'middle',
+                        sortable: true,
+                    }, 
+                    {   
+                        title: 'CPU Load',
+                        field: 'load',
+                        align: 'center',
+                        valign: 'middle',
+                        sortable: true,
+                    }, 
+                    {   
+                        title: 'Memory',
+                        field: 'mem',
+                        align: 'center',
+                        valign: 'middle',
+                        sortable: true,
+                    }, 
+                    {   
+                        title: 'Disk',
+                        field: 'disk',
+                        align: 'center',
+                        valign: 'middle',
+                        sortable: true,
+                    }, 
+                    {   
+                        title: 'Network',
+                        field: 'network',
+                        align: 'center',
+                        valign: 'middle',
+                        sortable: true,
+                    }, 
+                ],
+        });
+	}
+    function getHeight() {
+        return $(window).height() - $('h1').outerHeight(true);
+    }
+    initTable();
+    $table.everyTime('6s','T',function(){
+	$table.bootstrapTable('refresh');
+    },0,true);
+	//定时器，每4秒执行，定时器命名T，无限次，如果函数没有执行完成，则等待执行完成.
+</script>

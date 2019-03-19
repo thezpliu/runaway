@@ -1,0 +1,86 @@
+<table id="table1"
+           data-show-refresh="true"
+	   data-show-header="true"
+           data-show-toggle="true"
+           data-show-columns="true"
+           data-show-pagination-switch="true"
+	   data-striped = "true"
+           data-id-field="name"
+           data-show-footer="false"
+           data-url="/api/v1/p4_info"
+           data-pagination="true"
+	   data-side-pagination="client"
+	   data-page-size= "25"
+	   data-page-number="1"
+           data-page-list="[25, 50, 100, ALL]"
+	   data-toggle="table"
+	>
+</table>
+<script>
+	var $p4table = $('#table1');
+	function initTable() {
+        $p4table.bootstrapTable({
+            height: getHeight(),
+            columns: 
+                [
+                    {   
+                        title: 'PORT',
+                        field: 'port',
+                        align: 'center',
+                        valign: 'middle',
+                        sortable: true,
+                    }, 
+                    {   
+                       title: 'WorkSpace',
+                       field: 'client',
+                        align: 'center',
+                        valign: 'middle',
+                        sortable: true,
+                    }, 
+                    {   
+                        title: 'Status',
+                        field: 'status',
+                        align: 'center',
+                        valign: 'middle',
+                        sortable: true,
+                    }, 
+                    {   
+                        title: 'User',
+                        field: 'user',
+                        align: 'center',
+                        valign: 'middle',
+                        sortable: true,
+                    }, 
+                    {   
+                        title: 'Time',
+                        field: 'times',
+                        align: 'center',
+                        valign: 'middle',
+                        sortable: true,
+                    }, 
+                    {   
+                        title: 'Change',
+                        field: 'change',
+                        align: 'center',
+                        valign: 'middle',
+                        sortable: true,
+                    }, 
+                    {   
+                        title: 'Back',
+                        field: 'back',
+                        align: 'center',
+                        valign: 'middle',
+                        sortable: true,
+                    }, 
+                ],
+        });
+	}
+    function getHeight() {
+        return $(window).height() - $('h1').outerHeight(true);
+    }
+    initTable();
+    $p4table.everyTime('300s','p4',function(){
+	$p4table.bootstrapTable('refresh');
+    },0,true);
+	//定时器，每4秒执行，定时器命名T，无限次，如果函数没有执行完成，则等待执行完成.
+</script>
